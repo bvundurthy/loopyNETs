@@ -1,0 +1,2 @@
+Step 0: copy 'rename_as_parameters_put_in_each_condition.m' into every condition folder and rename it as 'parameters'. Modify the contents of this file in each folder to reflect the bright field images, live and dead cell images in that respective folder. Then modify the file name in 'Step0_change_directory.m' with the correct condition number and you are good to go. 
+Run all the remaining steps one after another. 
