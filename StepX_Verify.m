@@ -1,28 +1,12 @@
 close all
-clear variables
+clearvars -except conds num_conds curr_cond
 clc
 
-load 'primary_edges_workspace.mat';
+run('Step0_change_directory.m'); % cd into the condition folder
+run('parameters.m'); % import all necessary parameters for all Steps
 
-num_files = 7;
-fcell_all = {
-        'dapic1t1xy1.tif';
-        'tritcc1t1xy1.tif';
-        'tritcc1t2xy1.tif';
-        'tritcc1t3xy1.tif';
-        'tritcc1t4xy1.tif';
-        'tritcc1t5xy1.tif';
-        'tritcc1t6xy1.tif';
-        };
-sheet_names = {
-        'live01';
-        'dead01';
-        'dead02';
-        'dead03';
-        'dead04';
-        'dead05';
-        'dead06';
-                };
+% load('Step1_data.mat'); 
+load 'primary_edges_workspace.mat';
     
 regs = readmatrix('wells_list.xlsx');
 bb = regs(:,4:7);
@@ -37,7 +21,7 @@ rowmax = bb(well_no,2) + 0.5 + bb(well_no,4) + 15;
 figure(1)
 hold on
 
-for i = 1:num_files    
+for i = 1:num_times    
     subplot(2,4,i)
     img_test = imread(fcell_all{i});
     wells_all = readmatrix('Cells_Wells','sheet',sheet_names{i});
