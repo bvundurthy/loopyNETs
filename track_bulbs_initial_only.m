@@ -1,20 +1,7 @@
 % close all
 % clear variables
 % clc
-function [num_live_bulbs, cell_not_found, dead_bulbs_begin] = track_bulbs_initial_only()
-    live_times = 1; % Number of live cell data time points
-    dead_times = 5; % Number of live cell data time points
-    % List of sheet names for reading
-    live_sheets = {
-        'live01';
-                    };
-    dead_sheets = {
-        'dead01';
-        'dead02';
-        'dead03';
-        'dead04';
-        'dead05';};
-
+function [num_live_bulbs, cell_not_found, dead_bulbs_begin] = track_bulbs_initial_only(live_times, dead_times, live_sheets, dead_sheets, replicate_path_name)
     data_live = cell(live_times,1);
     data_dead = cell(dead_times,1);
     % Reading live and dead cell data sheets
@@ -73,7 +60,7 @@ function [num_live_bulbs, cell_not_found, dead_bulbs_begin] = track_bulbs_initia
 
     tracking_mat_bulbs(tracking_mat_bulbs(:,1)==0,:) = []; % Removing all extra cells that have not been considered
     tracking_mat_bulbs(:,end) = (tracking_mat_bulbs(:,10)./tracking_mat_bulbs(:,4)); % Including ratios of areas as the last column
-    write_name = 'Track_Cells.xlsx'; % Writing into the excel file
+    write_name = strcat(replicate_path_name,'Track_Cells.xlsx'); % Writing into the excel file
     writematrix(tracking_mat_bulbs, write_name, 'Sheet', 'bulbs','WriteMode','overwritesheet'); % bulbs have their own sheet
     writematrix([num_live_bulbs, cell_not_found, dead_bulbs_begin], write_name, 'Sheet', 'bulbs_num','WriteMode','overwritesheet'); % includes the numbers
     fprintf('Bulbs tracking done\n');

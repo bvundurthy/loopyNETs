@@ -5,9 +5,12 @@ clc
 disp('Getting Started...');
 tstart = tic;
 
+run('Step0_change_directory.m'); % cd into the condition folder
+run('parameters.m'); % import all necessary parameters for all Steps
+
 %% 1. Reading the image and converting it to binary
-fread = 'dicc1t2xy2.tif'; 
-img_src = imread(fread);
+% fbrgt_base = 'dicc1t2xy2.tif'; 
+img_src = imread(fbrgt_base);
 % imshow(img_src);
 disp('Image loading done...');        
 img_bw = rgb2gray(im2single(img_src)); % Converting to grayscale 
@@ -177,4 +180,6 @@ visboundaries(img_area_log(7000:8500, 7000:8500),'color','r');
 
 % title('log')
 save('Step1_data', 'img_wells', 'num_wells', 'img_orgl', 'img_bulbs', 'img_area_log', 'regs', 'max_wells');
+
+cd(git_path_name); 
 disp('End of code...');

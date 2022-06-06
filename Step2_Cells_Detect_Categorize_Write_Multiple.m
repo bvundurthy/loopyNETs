@@ -2,36 +2,16 @@
 % Variable img_wells comes from Step 1 and contains all the wells with numbers
 % Variable num_wells (also from Step 1) contains the total number of wells 
 % Variable img_brgt contains the bright field source image from Step 1
+close all
+clearvars -except conds num_conds curr_cond
 clc
-load 'Step1_data.mat';
-num_times = 6; 
-fbrgt_all = {
-        'dicc1t2xy2.tif';
-        'dicc1t2xy2.tif';
-        'dicc1t3xy2.tif';
-        'dicc1t4xy2.tif';
-        'dicc1t5xy2.tif';
-        'dicc1t6xy2.tif'
-        };
-fcell_all = {
-        'dapic1t2xy2.tif';
-        'tritcc1t2xy2.tif';
-        'tritcc1t3xy2.tif';
-        'tritcc1t4xy2.tif';
-        'tritcc1t5xy2.tif';
-        'tritcc1t6xy2.tif';
-        };
-sheet_names = {
-        'live01';
-        'dead01';
-        'dead02';
-        'dead03';
-        'dead04';
-        'dead05';
-                };
+
+run('Step0_change_directory.m'); % cd into the condition folder
+run('parameters.m'); % import all necessary parameters for all Steps
+load 'Step1_data.mat'; % load all data from Step 1
+
 wells_disp_all = zeros(num_times,2);            
 img_blob_area_all = cell(2*num_times,1);
-auto_illum = [0 0.3 0.3 0.3 0.3 0.3];%repmat(0.6,1,4)];
 
 for each_time = 1:num_times
     
@@ -272,5 +252,6 @@ save('primary_edges_workspace','regs','img_area_log','img_blob_area_all','wells_
 
 % figure (3)
 % imshow(y3);
+cd(git_path_name); 
 toc(tstart);
 disp('End of code...');

@@ -1,20 +1,7 @@
 % close all
 % clear variables
 % clc
-function [num_live_loops, cell_not_found, dead_loops_begin] = track_loops_initial_only()
-    live_times = 1; % Number of live cell data time points
-    dead_times = 5; % Number of live cell data time points
-    % List of sheet names for reading
-    live_sheets = {
-        'live01';
-                    };
-    dead_sheets = {
-        'dead01';
-        'dead02';
-        'dead03';
-        'dead04';
-        'dead05';};
-
+function [num_live_loops, cell_not_found, dead_loops_begin] = track_loops_initial_only(live_times, dead_times, live_sheets, dead_sheets, replicate_path_name)
     data_live = cell(live_times,1);
     data_dead = cell(dead_times,1);
     % Reading live and dead cell data sheets
@@ -73,7 +60,7 @@ function [num_live_loops, cell_not_found, dead_loops_begin] = track_loops_initia
 
     tracking_mat_loops(tracking_mat_loops(:,1)==0,:) = []; % Removing all extra cells that have not been considered
     tracking_mat_loops(:,end) = (tracking_mat_loops(:,10)./tracking_mat_loops(:,4)); % Including ratios of areas as the last column
-    write_name = 'Track_Cells.xlsx'; % Writing into the excel file
+    write_name = strcat(replicate_path_name,'Track_Cells.xlsx'); % Writing into the excel file
     writematrix(tracking_mat_loops, write_name, 'Sheet', 'loops','WriteMode','overwritesheet'); % loops have their own sheet
     writematrix([num_live_loops, cell_not_found, dead_loops_begin], write_name, 'Sheet', 'loops_num','WriteMode','overwritesheet'); % includes the numbers
     fprintf('Loops tracking done\n');

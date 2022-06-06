@@ -1,12 +1,9 @@
 close all
-% clear variables
 clearvars -except conds num_conds curr_cond
 clc
 
-%% Parameters
-num_replicates = 3; % Number of technical replicates
-num_bulbs = 100; % Number of cells in bulbs in each replicate
-num_loops = 100; % Number of cells in loops in each replicate
+run('Step0_change_directory.m'); % cd into the condition folder
+run('parameters.m'); % import all necessary parameters for all Steps
 
 bulbs_num_reps = num_replicates; 
 loops_num_reps = num_replicates; 
@@ -18,10 +15,10 @@ for i = 1:num_replicates
         copyfile('Cells_Bulbs.xlsx', newfile);
         copyfile('Cells_Loops.xlsx', newfile);
         copyfile('Cells_Wells.xlsx', newfile); 
-        copyfile('Step4_PostProcessing.m', newfile); 
-        copyfile('track_bulbs_initial_only.m', newfile); 
-        copyfile('track_loops_initial_only.m', newfile); 
-        copyfile('track_wells_initial_only.m', newfile); 
+%         copyfile('Step4_PostProcessing.m', newfile); 
+%         copyfile('track_bulbs_initial_only.m', newfile); 
+%         copyfile('track_loops_initial_only.m', newfile); 
+%         copyfile('track_wells_initial_only.m', newfile); 
         fprintf('Replicate %d folder created\n', i); 
     else
         fprintf('Replicate %d folder already exists \n', i);
@@ -82,9 +79,10 @@ elseif (correct_reps == 2)
     fprintf('Replicate 3 folder removed \n');
 end
 
-%% Change the current directory to inside the folder and run step4 preprocessing
+%% Change the current directory to inside each replicate folder and run Step 4
 for i = 1:correct_reps
-    cd(strcat('replicate',num2str(i)));
-    run('Step4_PostProcessing.m'); 
+    fprintf('Working on Replicate %d \n',i); 
+    replicate_path_name = strcat(path_name, 'replicate', num2str(i),'\');
+    run(strcat(git_path_name,'Step4_PostProcessing.m')); 
     cd ..\
 end

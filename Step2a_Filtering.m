@@ -2,24 +2,16 @@
 % This is helpful in avoiding cluttering. 
 
 close all
-clear variables
+clearvars -except conds num_conds curr_cond
 clc
 
-if ~isfile('Cells_Wells_Old.xlsx')
-    movefile('Cells_Wells.xlsx', 'Cells_Wells_Old.xlsx');
-    movefile('Cells_Bulbs.xlsx', 'Cells_Bulbs_Old.xlsx');
-    movefile('Cells_Loops.xlsx', 'Cells_Loops_Old.xlsx');
-end
+run('Step0_change_directory.m'); % cd into the condition folder
+run('parameters.m'); % import all necessary parameters for all Steps
 
-num_times = 6;
-sheet_names = {
-        'live01';
-        'dead01';
-        'dead02';
-        'dead03';
-        'dead04';
-        'dead05';
-                };
+% Create copies of files and operate on older files to ensure backup
+movefile('Cells_Wells.xlsx', 'Cells_Wells_Old.xlsx');
+movefile('Cells_Bulbs.xlsx', 'Cells_Bulbs_Old.xlsx');
+movefile('Cells_Loops.xlsx', 'Cells_Loops_Old.xlsx');
 
 for each_time = 1:num_times
     % Removing all wells that have greater than 3 cells. 
@@ -52,10 +44,8 @@ for each_time = 1:num_times
     writematrix(loops_mdfd, 'Cells_Loops.xlsx', 'Sheet', sheet_names{each_time},'WriteMode','overwritesheet');
     
 end
-%     
-%     % add condition for iteration == 1
-%     % randsample([1 3 5 7 9],3); - this will randomize 3 numbers within
-%     % this array
+
+cd(git_path_name); 
 
 
 
