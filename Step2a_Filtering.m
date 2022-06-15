@@ -9,18 +9,18 @@ run('Step0_change_directory.m'); % cd into the condition folder
 run('parameters.m'); % import all necessary parameters for all Steps
 
 % Create copies of files and operate on older files to ensure backup
-movefile('Cells_Wells.xlsx', 'Cells_Wells_Old.xlsx');
-movefile('Cells_Bulbs.xlsx', 'Cells_Bulbs_Old.xlsx');
-movefile('Cells_Loops.xlsx', 'Cells_Loops_Old.xlsx');
+movefile('Cells_Wells.xlsx', 'Cells_Wells_unfiltered.xlsx');
+movefile('Cells_Bulbs.xlsx', 'Cells_Bulbs_unfiltered.xlsx');
+movefile('Cells_Loops.xlsx', 'Cells_Loops_unfiltered.xlsx');
 
 for each_time = 1:num_times
     % Removing all wells that have greater than 3 cells. 
     % Removing corresponding bulbs and loops too. 
     % Note: Handling sorted data
     
-    wells = readmatrix('Cells_Wells_Old.xlsx', 'Sheet', sheet_names{each_time});
-    bulbs = readmatrix('Cells_Bulbs_Old.xlsx', 'Sheet', sheet_names{each_time});
-    loops = readmatrix('Cells_Loops_Old.xlsx', 'Sheet', sheet_names{each_time});
+    wells = readmatrix('Cells_Wells_unfiltered.xlsx', 'Sheet', sheet_names{each_time});
+    bulbs = readmatrix('Cells_Bulbs_unfiltered.xlsx', 'Sheet', sheet_names{each_time});
+    loops = readmatrix('Cells_Loops_unfiltered.xlsx', 'Sheet', sheet_names{each_time});
     
     wells_stats = unique(wells(:,1)); % unique well numbers
     wells_stats(:,2) = groupcounts(wells(:,1)); % Repetitions

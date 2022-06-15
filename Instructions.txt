@@ -1,2 +1,4 @@
-Step 0: copy 'rename_as_parameters_put_in_each_condition.m' into every condition folder and rename it as 'parameters'. Modify the contents of this file in each folder to reflect the bright field images, live and dead cell images in that respective folder. Then modify the file name in 'Step0_change_directory.m' with the correct condition number and you are good to go. 
-Run all the remaining steps one after another. 
+1. Copy 'rename_as_parameters_put_in_each_condition.m' into every condition folder and rename it as 'parameters'. Modify the contents of this file in each folder to reflect the bright field images, live and dead cell images in that respective folder. No need to run parameters.m.
+2. Then modify the file name in 'Step0_change_directory.m' with the correct folder and condition number and you are good to go. No need to run step 0.
+3. Run only the remaining steps (1, 2, 2a, 3) one after another. 
+4. Step5 can now be run without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. 

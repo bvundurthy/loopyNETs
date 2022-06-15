@@ -10,7 +10,7 @@ load 'primary_edges_workspace.mat';
     
 regs = readmatrix('wells_list.xlsx');
 bb = regs(:,4:7);
-well_no=525;
+well_no=238;
 
 %Creating a buffer of 15 on both sides to accomodate displacement
 colmin = bb(well_no,1) - 0.5 - 15; 
