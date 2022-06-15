@@ -86,3 +86,4 @@ for i = 1:correct_reps
     run(strcat(git_path_name,'Step4_PostProcessing.m')); 
     cd ..\
 end
+cd(git_path_name);
