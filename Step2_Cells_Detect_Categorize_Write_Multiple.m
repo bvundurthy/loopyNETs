@@ -15,7 +15,7 @@ img_blob_area_all = cell(2*num_times,1);
 
 for each_time = 1:num_times
     
-    clearvars -except img_wells num_wells img_orgl img_bulbs img_area_log regs num_times each_time fbrgt_all fcell_all wells_disp_all sheet_names img_blob_area_all max_wells auto_illum conds num_conds curr_cond
+    clearvars -except img_wells num_wells img_orgl img_bulbs img_area_log regs num_times each_time fbrgt_all fcell_all wells_disp_all sheet_names img_blob_area_all max_wells auto_illum conds num_conds curr_cond folder_name path_name git_path_name
     fprintf('Getting Started: Iteration %d \n', each_time);
     tstart = tic; 
 
@@ -58,7 +58,7 @@ for each_time = 1:num_times
     while (loop_exit == 0)
         idx = knnsearch(centroid_brgt, centroid_orgl(i,:));
         wells_disp = round(centroid_brgt(idx,:)-centroid_orgl(i,:));
-        if max(abs(wells_disp)) < 150        
+        if max(abs(wells_disp)) < 110        
             loop_exit = 1; 
         else
             i = i + 1;
@@ -110,8 +110,8 @@ for each_time = 1:num_times
     img_blob_bw = rgb2gray(im2single(img_blob_src));     
     auto_thresh = graythresh(img_blob_bw);
     fprintf('Auto Gray Threshold value = %f\n',auto_thresh);
-    if (each_time <= 1)
-        img_blob_binary = imbinarize(img_blob_bw); % Note that the default is not 0
+    if (auto_illum(each_time) == 0)
+        img_blob_binary = imbinarize(img_blob_bw); % Note that the default is not 0 - this does the automated version by MATLAB
     else
         img_blob_binary = imbinarize(img_blob_bw,auto_illum(each_time)); % useful with auto-illumination
     end

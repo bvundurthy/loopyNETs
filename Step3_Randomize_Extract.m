@@ -9,20 +9,20 @@ bulbs_num_reps = num_replicates;
 loops_num_reps = num_replicates; 
 %% Creates new files and folders for replicates
 for i = 1:num_replicates
-    if ~isfile(append('replicate',num2str(i),'\Cells_Wells.xlsx'))
-        newfile = strcat('replicate',num2str(i)); 
-        mkdir(newfile);
-        copyfile('Cells_Bulbs.xlsx', newfile);
-        copyfile('Cells_Loops.xlsx', newfile);
-        copyfile('Cells_Wells.xlsx', newfile); 
+    if isfile(append('replicate',num2str(i),'\Cells_Wells.xlsx'))
+        fprintf('Replicate %d folder already exists. Deleting and recreating new folder. \n', i);
+        rmdir(strcat('replicate',num2str(i)), 's');
+    end
+    newfile = strcat('replicate',num2str(i)); 
+    mkdir(newfile);
+    copyfile('Cells_Bulbs.xlsx', newfile);
+    copyfile('Cells_Loops.xlsx', newfile);
+    copyfile('Cells_Wells.xlsx', newfile); 
 %         copyfile('Step4_PostProcessing.m', newfile); 
 %         copyfile('track_bulbs_initial_only.m', newfile); 
 %         copyfile('track_loops_initial_only.m', newfile); 
 %         copyfile('track_wells_initial_only.m', newfile); 
-        fprintf('Replicate %d folder created\n', i); 
-    else
-        fprintf('Replicate %d folder already exists \n', i);
-    end
+    fprintf('Replicate %d folder created\n', i); 
 end
 %% Extract <num_replicates> sets of <num_bulbs> bulbs
 
