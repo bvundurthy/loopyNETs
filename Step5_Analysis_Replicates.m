@@ -16,15 +16,15 @@ conds = [1 2 3 4 5 6 7 8 9];
 num_conds = length(conds);
 
 
-write_name_ratio = 'Statistics_Ratio_(1.5-15)_unequal.xlsx'; % Writing into the excel file   
-write_name_times = 'Statistics_Times_(1.5-15)_unequal.xlsx'; % Writing into the excel file   
+write_name_ratio = 'Statistics_Ratio_(2-15)_unequal_autoillum0.xlsx'; % Writing into the excel file   
+write_name_times = 'Statistics_Times_(2-15)_unequal_autoillum0.xlsx'; % Writing into the excel file   
 
-ratio_min = 1.5;
+ratio_min = 2;
 ratio_max = 15; 
 time_min = 0.5; 
 time_max = 7.5; 
 % x_bins = ratio_min:1:ratio_max; 
-x_bins = [1.5 3 5 10 15]; 
+x_bins = [2 3 5 10 15]; 
 x_bins_labels = strcat(num2str(x_bins(1:end-1)'),'-',num2str(x_bins(2:end)'));
 x_bins_times = time_min:1:time_max;  
 x_times_labels = strcat('0000',num2str((x_bins_times(1:end-1)+0.5)'));
