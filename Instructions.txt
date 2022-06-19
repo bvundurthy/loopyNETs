@@ -1,4 +1,5 @@
 1. Copy 'rename_as_parameters_put_in_each_condition.m' into every condition folder and rename it as 'parameters'. Modify the contents of this file in each folder to reflect the bright field images, live and dead cell images in that respective folder. Also, change the num_times. No need to run parameters.m.
-2. Then modify the file name in 'Step0_change_directory.m' with the correct folder and condition number and you are good to go. No need to run step 0.
-3. Run only the remaining steps (1, 2, 2a, 3) one after another. 
-4. Step5 can now be run without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. Also make sure the condition numbers are correct.
+2. Then modify the file name in 'Step0_change_directory.m' with the correct folder and condition number. No need to run Step0_change_directory.m.
+3. If there are no bubbles, skip this step and go to Step 4. In the presence of bubbles, run Step_NaN_bubbles_detect.m. This will open up a bright field image. Count the number of rectangles around bubbles that you want to create and enter this number in the command window and hit enter. This will open up a marquee tool in the image window. Select each bubble by creating a rectangle around the bubble. Do this for all bubbles and you are done with this step. 
+4. Run only the remaining steps (1, 2, 2a, 3) one after another. Run Step 2b if you want to see the statistics on neutrophile deposition density. 
+5. Step5 can now be run without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. Also make sure the condition numbers are correct.

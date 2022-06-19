@@ -18,6 +18,13 @@ fcell_all = {
         'tritcc1t4xy1.tif';
         'tritcc1t5xy1.tif';
         'tritcc1t6xy1.tif';};
+
+% Loads bubble coordinates if available
+bbl_box = [];
+if isfile('bubbles_coords.mat')
+    load('bubbles_coords.mat');
+end
+
 % Sheet labels for all live and dead timsheete points
 sheet_names = {
         'live01';

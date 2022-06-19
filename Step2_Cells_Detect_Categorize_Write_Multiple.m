@@ -30,16 +30,13 @@ for each_time = 1:num_times
     img_brgt_binary = imbinarize(img_brgt_morph);
     disp('Image conversion to binary done...');  
 
-    %% Removing air bubble areas from the binary image
-% 
-% %     The bubble boxes are given by [rowmin, rowmax, colmin, colmax]
-% %     Each line represents a different bubble
-% %     Note that when using markers on the figure: x -> columns, y -> rows
-%     bbl_box = [3553, 7685, 3525, 7647]; 
-%     for i = 1:length(bbl_box(:,1))
-%         img_binary(bbl_box(i,1):bbl_box(i,2), bbl_box(i,3):bbl_box(i,4)) = 0;
-%     end
-%     disp ('Air bubbles removed from the binary figure...');
+    %% 2. Removing air bubble areas from the binary image
+    for i = 1:size(bbl_box(:,1),1)
+        img_binary(bbl_box(i,1):bbl_box(i,2), bbl_box(i,3):bbl_box(i,4)) = 0;
+        if (i==1)
+            disp ('Air bubbles are being removed from the binary figure...');
+        end
+    end
 
     %% Identifying and separating the wells 
 
