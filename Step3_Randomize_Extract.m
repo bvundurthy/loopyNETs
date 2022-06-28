@@ -85,5 +85,11 @@ for i = 1:correct_reps
     replicate_path_name = strcat(path_name, 'replicate', num2str(i),'\');
     run(strcat(git_path_name,'Step4_PostProcessing.m')); 
     cd ..\
+    if Ab_switch
+        run(strcat(git_path_name,'Step4a_Ab_PostProcessing.m')); 
+    else
+        fprintf('No antibody staining for this replicate. \n');
+    end
+    cd ..\
 end
 cd(git_path_name);

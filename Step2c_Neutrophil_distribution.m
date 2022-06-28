@@ -4,6 +4,7 @@ clc
 
 run('Step0_change_directory.m'); % cd into the condition folder
 run('parameters.m'); % import all necessary parameters for all Steps
+fileID = fopen('neutrophil_distribution.txt','w');
 
 % Read information about the wells from the excel file created in Step 1
 wells = readmatrix('wells_list.xlsx');
@@ -18,10 +19,14 @@ cells_wells = readmatrix('Cells_Wells_unfiltered.xlsx', 'Sheet', 'live01');
 
 num_wells_valid = length(unique(cells_wells(:,1))); % wells with at least one cell
 num_cells = length(cells_wells(:,1)); % total number of cells
-fprintf('The total number of detected wells is %d. \n', num_wells);
-fprintf('There are a total of %d cells spread across %d wells. \n', num_cells, num_wells_valid); 
+fprintf(fileID,'The total number of detected wells is %d. \n', num_wells);
+fprintf(fileID,'There are a total of %d cells spread across %d wells. \n', num_cells, num_wells_valid); 
 
-fprintf('%2.2f%% of wells have NO cell/s in them. \n', (((num_wells-num_wells_valid)/num_wells)*100)); 
+fprintf(fileID,'%2.2f%% of wells have NO cell/s in them. \n', (((num_wells-num_wells_valid)/num_wells)*100)); 
 for i = 1:length(category)
-    fprintf('%2.2f%% (%d) of wells have only %d cell/s in them. \n', ((category_counts(i)/num_wells)*100),category_counts(i), category(i)); 
+    fprintf(fileID,'%2.2f%% (%d) of wells have only %d cell/s in them. \n', ((category_counts(i)/num_wells)*100),category_counts(i), category(i)); 
 end
+
+fprintf('File created and saved. Look in the condition folder. \n'); 
+fclose(fileID);
+cd(git_path_name); 

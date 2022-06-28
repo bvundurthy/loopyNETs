@@ -22,7 +22,7 @@ for i = 1:num_bubbles
     figure
     imshow(img_src(bbl_box(i,1):bbl_box(i,2), bbl_box(i,3):bbl_box(i,4), :)); 
 end
-fprintf('Bubbles marked and saved. Go to Step 1');
+fprintf('Bubbles marked and saved. Go to Step 1. \n');
 clearvars -except bbl_box git_path_name
 save('bubbles_coords');
 cd(git_path_name); 

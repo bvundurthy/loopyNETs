@@ -10,7 +10,7 @@ load 'primary_edges_workspace.mat';
     
 regs = readmatrix('wells_list.xlsx');
 bb = regs(:,4:7);
-well_no=238;
+well_no=156;
 
 %Creating a buffer of 15 on both sides to accomodate displacement
 colmin = bb(well_no,1) - 0.5 - 15; 
@@ -21,8 +21,11 @@ rowmax = bb(well_no,2) + 0.5 + bb(well_no,4) + 15;
 figure(1)
 hold on
 
+num_times = num_times+2; 
+fcell_all =  vertcat(fcell_all, Ab_cell);
+sheet_names = vertcat(sheet_names,Ab_sheets); 
 for i = 1:num_times    
-    subplot(2,4,i)
+    subplot(2,5,i)
     img_test = imread(fcell_all{i});
     wells_all = readmatrix('Cells_Wells','sheet',sheet_names{i});
     wells_this = wells_all(wells_all(:,1)==well_no,:);
