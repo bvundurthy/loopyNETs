@@ -16,8 +16,8 @@ conds = [1 2 3 4 5 6 7 8 9];
 num_conds = length(conds);
 
 
-write_name_ratio = 'Statistics_Ratio_(2-15)_unequal_autoillum0.xlsx'; % Writing into the excel file   
-write_name_times = 'Statistics_Times_(2-15)_unequal_autoillum0.xlsx'; % Writing into the excel file   
+write_name_ratio = 'Statistics_Ratio_(2-15)_unequal.xlsx'; % Writing into the excel file   
+write_name_times = 'Statistics_Times_(2-15)_unequal.xlsx'; % Writing into the excel file   
 
 ratio_min = 2;
 ratio_max = 15; 

@@ -62,7 +62,7 @@ img_binary = imbinarize(img_morph);
 disp('Image conversion to binary done...');  
 
 %% 2. Removing air bubble areas from the binary image
-for i = 1:size(bbl_box(:,1),1)
+for i = 1:size(bbl_box,1)
     img_binary(bbl_box(i,1):bbl_box(i,2), bbl_box(i,3):bbl_box(i,4)) = 0;
     if (i==1)
         disp('Air bubbles are present in this condition. Removing them from the binary figure...');
@@ -102,8 +102,10 @@ img_size = size(img_area_log);
 img_wells = zeros(img_size(1), img_size(2)); % Creating wells image
 img_bulbs = zeros(img_size(1), img_size(2)); % Creating bulbs image
 invalid_wells = zeros(num_wells,1); count = 0; 
+fprintf('A few wells will be discarded to eliminate incorrect identification. If you plan to debug, note that the number will go down.\n'); 
+figure; 
 for i = 1:num_wells
-    fprintf('Iteration: %d\n',i); 
+%     fprintf('Iteration: %d\n',i); 
     % Identifying bounding box for each well (rmin:rmax, cmin:cmax)
     cmin = ceil(bb(i,1)); 
     cmax = cmin + bb(i,3) - 1;
@@ -111,61 +113,55 @@ for i = 1:num_wells
     rmax = rmin + bb(i,4) - 1;    
     img_here = regs(i).Image; %img_area_log(rowmin:rowmax, colmin:colmax);
     
-    % Creating image for bulbs with the well number
-    img_temp = zeros(bb(i,4), bb(i,3));
-    img_temp_size = size(img_temp); count_bulb = 0; 
+    % Creating temporary image for bulbs with the well number
+    % bb(i,4) and bb(i,3) are used for the number of rows and columns in the rest of the code
+    img_temp = zeros(bb(i,4), bb(i,3)); count_bulb = 0; 
     for j = 0.85:0.01:1
         [cen, rad] = imfindcircles(img_here, [37 47], 'Sensitivity', j);
         if isempty(rad)
             count_bulb = count_bulb + 1; 
             continue;
         elseif (length(rad)>1)
-            fprintf('Found multiple bulbs in iteration %d. Selecting the right most bulb and moving on. \n',i);
-%             figure
-%             imshow(img_here);
-%             viscircles(cen, rad);
-%             % Circles that reach outside the BB are removed
-%             cen_rmin = cen(:,2)-rad; idx_rmin = find(cen_rmin<0);
-%             cen_rmax = cen(:,2)+rad; idx_rmax = find(cen_rmax>bb(i,4)); 
-%             cen_cmin = cen(:,1)-rad; idx_cmin = find(cen_cmin<0);
-%             cen_cmax = cen(:,1)+rad; idx_cmax = find(cen_cmax>bb(i,3)); 
-%             idx = [idx_rmin; idx_rmax; idx_cmin; idx_cmax]; 
-%             cen(idx,:) = []; rad(idx) = []; 
-%             figure
-%             imshow(img_here);
-%             viscircles(cen, rad);     
+            [~, pos] = max(cen(:,1)); % Identifying the farthest circle as bulb
+            cen = cen(pos,:); rad = rad(pos); % Removing all other bulbs    
         end
-        [~, pos] = max(cen(:,1)); % Identifying the farthest circle as bulb
-        cen = cen(pos,:); rad = rad(pos); % Removing all other bulbs
+
         bulb_rmin = floor(cen(2)-rad);
         bulb_cmin = floor(cen(1)-rad);
-        bulb_rmax = min(img_temp_size(1), ceil(cen(2)+rad)); 
-        bulb_cmax = min(img_temp_size(2), ceil(cen(1)+rad));
-        for row = bulb_rmin:bulb_rmax
-            for col = bulb_cmin:bulb_cmax
-                if norm([col row]-cen)<rad
-                    img_temp(row,col) = i;
+        bulb_rmax = min(bb(i,4), ceil(cen(2)+rad)); 
+        bulb_cmax = min(bb(i,3), ceil(cen(1)+rad));
+        if (bulb_rmin>0 && bulb_cmin>0 && bulb_rmax<bb(i,4)+1 && bulb_cmax<bb(i,3)+1) % in cases where bulb is out of bounds
+            for row = bulb_rmin:bulb_rmax
+                for col = bulb_cmin:bulb_cmax
+                    if norm([col row]-cen)<rad
+                        img_temp(row,col) = i;
+                    end
                 end
-            end
+            end            
+            break;
+        else 
+            count_bulb = count_bulb + 1;  
+            continue; 
         end
-        break;
     end
-    if (count_bulb == 16)
-        fprintf('Found no bulbs in iteration %d. This well will be discarded. If you plan to debug, note that the order will change. \n',i);
+    if (count_bulb == 16 || img_here(round(cen(2)), round(cen(1)))==0)
+        fprintf('Found no bulbs or hollow bulb in iteration %d. This well will be discarded.\n',i);
         count = count + 1; invalid_wells(count) = i; 
+        subplot (2,5,(rem(count-1,10)+1))
+        imshow(img_here);
+        viscircles(cen, rad); 
+        title(sprintf('iteration %d',i)); 
+        if (rem(count,10)==0)
+            figure; 
+        end
     else
+        % Creating image for bulbs with the well number
         img_bulbs(rmin:rmax, cmin:cmax) = img_temp; 
-%         figure
-%         imshow(img_temp);
         % Creating image for wells with the well number
         img_temp = zeros(bb(i,4), bb(i,3));
         img_temp(img_here == 1) = i;
-        img_wells(rmin:rmax, cmin:cmax) = img_temp;   
-%         figure
-%         imshow(img_temp);
+        img_wells(rmin:rmax, cmin:cmax) = img_temp;  
     end
-%     close all
-%     rectangle('Position',[bb(i,1) bb(i,2) bb(i,3) bb(i,4)],'EdgeColor','green');
 end
 
 invalid_wells(invalid_wells == 0) = []; 
@@ -187,7 +183,7 @@ figure
 imshow(img_orgl(7000:8500, 7000:8500));
 % imshow(img_orgl);
 hold on
-visboundaries(img_area_log(7000:8500, 7000:8500),'color','r');
+visboundaries(img_wells(7000:8500, 7000:8500),'color','r');
 visboundaries(img_bulbs(7000:8500, 7000:8500),'color','b');
 % visboundaries(img_area_log,'color','r');
 % savefig('Figure_wells_list'); 

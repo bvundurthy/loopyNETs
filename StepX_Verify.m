@@ -5,61 +5,54 @@ clc
 run('Step0_change_directory.m'); % cd into the condition folder
 run('parameters.m'); % import all necessary parameters for all Steps
 
-% load('Step1_data.mat'); 
-load 'primary_edges_workspace.mat';
-    
-regs = readmatrix('wells_list.xlsx');
-bb = regs(:,4:7);
-well_no=156;
+load 'Step1_wells.mat'; 
+load 'Step2_cells.mat'; 
 
-%Creating a buffer of 15 on both sides to accomodate displacement
-colmin = bb(well_no,1) - 0.5 - 15; 
-colmax = bb(well_no,1) + 0.5 + bb(well_no,3) + 15;
-rowmin = bb(well_no,2) - 0.5 - 15; 
-rowmax = bb(well_no,2) + 0.5 + bb(well_no,4) + 15;
+run_times = 1:num_times; 
+run_wells = 280; % 1:num_wells; 
 
-figure(1)
-hold on
-
-num_times = num_times+2; 
-fcell_all =  vertcat(fcell_all, Ab_cell);
-sheet_names = vertcat(sheet_names,Ab_sheets); 
-for i = 1:num_times    
-    subplot(2,5,i)
-    img_test = imread(fcell_all{i});
-    wells_all = readmatrix('Cells_Wells','sheet',sheet_names{i});
-    wells_this = wells_all(wells_all(:,1)==well_no,:);
-    if ~isempty(wells_this)
-        img_test = insertText(img_test, wells_this(:,4:5), wells_this(:,3),'AnchorPoint','LeftBottom','BoxOpacity',0,'TextColor','white','FontSize',21);
-        img_test = insertMarker(img_test, wells_this(:,4:5), '*', 'Color', 'white');
-    end
-    imshow(img_test(rowmin:rowmax, colmin:colmax,:));
-    hold on; 
-    title(sheet_names{i}); 
-    fprintf('iteration %d \n',i);
-    wells_disp = wells_disp_all(i,:);
-    img_bound = img_area_log(rowmin:rowmax, colmin:colmax,:);
-    size_orgl = size(img_bound);
-    img_area_wells = zeros(size_orgl(1), size_orgl(2));
-
-    % Shifting in x direction - equivalent to moving columns
-    mov_col = abs(wells_disp(1)); 
-    if wells_disp(1) > 0
-        img_area_wells(:, mov_col+1:end) = img_bound(:, 1:end-mov_col);
-    else
-        img_area_wells(:, 1:end-mov_col) = img_bound(:, mov_col+1:end);    
-    end
-
-    % Shifting in y direction - equivalent to moving rows
-    mov_row = abs(wells_disp(2)); 
-    if wells_disp(2) > 0
-        img_area_wells(mov_row+1:end, :) = img_area_wells(1:end-mov_row, :);
-    else
-        img_area_wells(1:end-mov_row, :) = img_area_wells(mov_row+1:end, :);    
-    end
-    
-    visboundaries(img_area_wells, 'color', 'r'); 
-    visboundaries(img_blob_area_all{i}(rowmin:rowmax, colmin:colmax,:), 'color', 'c');
-    
-%     rectangle('Position',[bb(well_no,1) bb(well_no,2) bb(well_no,3) bb(well_no,4)],'EdgeColor','green');
+img_brgt_src = cell(length(run_times),1); 
+img_blob_src = cell(length(run_times),1); 
+disp('Reading files...');
+for curr_time = run_times%1:num_times
+    fprintf('Iteration %d/%d \n',curr_time, length(num_times)); 
+    % Reading the bright field image for easy plotting
+    fbrgt = fbrgt_all{curr_time}; % Taking each bright image file
+    img_brgt_src{curr_time} = imread(fbrgt);
+    % Reading the image and converting it to binary
+    fcell = fcell_all{curr_time}; 
+    img_blob_src{curr_time} = imread(fcell);
 end
+disp('Finished reading all files');
+%% Creating the image panel - can run this section repeatedly
+
+for curr_time = run_times %1:num_times
+    for curr_well = run_wells
+    curr_well_BB = wells(curr_well).BoundingBox;
+    cmin = ceil(curr_well_BB(1)+wells_disp_all(curr_time,1)); 
+    cmax = cmin + curr_well_BB(3) - 1;
+    rmin = ceil(curr_well_BB(2)+wells_disp_all(curr_time,2));
+    rmax = rmin + curr_well_BB(4) - 1;
+    
+    subplot(2,5,curr_time)
+    hold on; 
+    curr_img_show = 0.5*img_brgt_src{curr_time}(rmin:rmax, cmin:cmax) + 2*img_blob_src{curr_time}(rmin:rmax, cmin:cmax,:);
+    if ~isempty(cells{curr_time, curr_well})
+        cells_marker = insertMarker(curr_img_show, cat(1, cells{curr_time, curr_well}.Centroid), '*', 'Color', 'w');  
+        cells_marker = insertText(cells_marker, cat(1, cells{curr_time, curr_well}.Centroid), cat(1, cells{curr_time, curr_well}.Area),'AnchorPoint','LeftBottom','BoxOpacity',0,'TextColor','w');
+        imshow(cells_marker);
+        visboundaries(cells_bulbs_image{curr_time, curr_well},'Color','r'); 
+        visboundaries(cells_loops_image{curr_time, curr_well},'Color','m'); 
+        visboundaries(wells(curr_well).Image,'Color','c'); 
+    else        
+        imshow(curr_img_show);
+        visboundaries(wells(curr_well).Image,'Color','c'); 
+    end
+    title(sprintf('%s',sheet_names{curr_time}));
+    sgtitle(sprintf('Well number %d', curr_well)); 
+    end
+end
+
+%% Transfer control back to git folder and end the code
+cd(git_path_name); 
+disp('End of code...');
