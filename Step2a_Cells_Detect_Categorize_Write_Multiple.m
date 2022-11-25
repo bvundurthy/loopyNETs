@@ -205,10 +205,10 @@ for curr_time = run_times
     toc(tstart);
 end
 
-% Create copies of files and operate on older files to ensure backup
-movefile('Cells_Wells.xlsx', 'Cells_Wells_backup.xlsx');
-movefile('Cells_Bulbs.xlsx', 'Cells_Bulbs_backup.xlsx');
-movefile('Cells_Loops.xlsx', 'Cells_Loops_backup.xlsx');
+% % Create copies of files and operate on older files to ensure backup
+% movefile('Cells_Wells.xlsx', 'Cells_Wells_backup.xlsx');
+% movefile('Cells_Bulbs.xlsx', 'Cells_Bulbs_backup.xlsx');
+% movefile('Cells_Loops.xlsx', 'Cells_Loops_backup.xlsx');
 
 disp('Note: "cells" contains Area (in pixels), Centroid and Bounding box of all cells across all time points in a structure format. cells{3,5} gives you the 5th well in the 3rd image.');
 disp('Note: "cell_image contains all the cell images for all wells across all time points. Use visboundaries to print the boundaries of wells. cells{3,5} gives you the 5th well in the 3rd image."');

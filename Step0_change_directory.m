@@ -1,8 +1,8 @@
 % This code is only to identify the specific condition that we are testing
 
 % Path name for the specific condition we intend to investigate
-folder_name = 'E:\Udaya\07_13_2022\tiff_files\';
-path_name = strcat(folder_name, 'Cond_1\');
+folder_name = 'E:\Udaya\08_01_2022\tiff_files\';
+path_name = strcat(folder_name, 'Cond_10\');
 % Path name for git files
 git_path_name = 'E:\Udaya\z_git_repo\loopyNETs\'; 
 

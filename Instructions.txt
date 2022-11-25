@@ -28,7 +28,7 @@ Analysis begins here. Gear up!
 
 2b. Run 'Step2b_Neutrophil_distribution.m' to create a text file with the distribution of cells before any filtering (see next step). 
 
-2c. Run 'Step2c_Filtering.m' to filter out wells with greater than 3 cells and live cells that have an area greater than 177 sq. microns. 
+2c. Run 'Step2c_Filtering.m' to filter out wells with greater than 4 cells and live cells that have an area greater than 177 sq. microns. 
 
 3. Run 'Step3_Randomize_Extract.m' to create 3 replicates (number based on value in parameters file) for this condition and then perform tracking on each of these replicates. Note that this will automatically execute Steps 4a and 4 internally. 
 
@@ -38,3 +38,4 @@ Once you finish running all of the above steps for all conditions, do the follow
 
 5. Run 'Step5_Analysis_Replicates' without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. Also make sure the condition numbers are correct. 
 
+Note: If you find the technical replicates off by more than 5% for any condition, create a backup folder and move the files cells_wells, cells_bulbs, cells_loops, and folders replicate 1 and 2 into the backup folder. Then, remove the word unfiltered from the cells_wells_unfiltered, cells_bulbs_unfiltered and cells_loops_unfiltered files (hence renaming them). Finally, run steps 2c and 3 again after making sure to point to the right folder and condition in step 0.

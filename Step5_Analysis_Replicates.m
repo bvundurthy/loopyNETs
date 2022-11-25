@@ -12,17 +12,17 @@ clc
 run('Step0_change_directory.m'); % cd into the condition folder
 cd ..\
 
-conds = [1 2 3 4 5 6 7 8 9]; 
+conds = [1 2 3 4 5 6 7 8 9 10]; 
 num_conds = length(conds);
 
 
-write_name_ratio = 'Statistics_Ratio_(2-15)_unequal.xlsx'; % Writing into the excel file   
-write_name_times = 'Statistics_Times_(2-15)_unequal.xlsx'; % Writing into the excel file   
+write_name_ratio = 'Statistics_Ratio_(2-15)_unequal_new.xlsx'; % Writing into the excel file   
+write_name_times = 'Statistics_Times_(2-15)_unequal_new.xlsx'; % Writing into the excel file   
 
 ratio_min = 2;
 ratio_max = 15; 
 time_min = 0.5; 
-time_max = 7.5; 
+time_max = 6.5; 
 % x_bins = ratio_min:1:ratio_max; 
 x_bins = [2 3 5 10 15]; 
 x_bins_labels = strcat(num2str(x_bins(1:end-1)'),'-',num2str(x_bins(2:end)'));
