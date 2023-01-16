@@ -12,7 +12,7 @@ clc
 run('Step0_change_directory.m'); % cd into the condition folder
 cd ..\
 
-conds = [1 2 3 4 5 6 7 8 9 10]; 
+conds = [1 2 3 4 5 6 7 8 9]; 
 num_conds = length(conds);
 
 
