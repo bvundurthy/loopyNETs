@@ -2,7 +2,8 @@
 
 % Path name for the specific condition we intend to investigate
 folder_name = 'E:\Udaya\06_16_2022\tiff_files\';
-path_name = strcat(folder_name, 'Cond_1\');
+cond_num = 4; 
+path_name = strcat(folder_name, 'Cond_', num2str(cond_num), '\');
 % Path name for git files
 git_path_name = 'E:\Udaya\z_git_repo\loopyNETs\'; 
 
