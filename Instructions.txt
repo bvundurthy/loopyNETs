@@ -39,3 +39,14 @@ Once you finish running all of the above steps for all conditions, do the follow
 5. Run 'Step5_Analysis_Replicates' without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. Also make sure the condition numbers are correct. 
 
 Note: If you find the technical replicates off by more than 5% for any condition, create a backup folder and move the files cells_wells, cells_bulbs, cells_loops, and folders replicate 1 and 2 into the backup folder. Then, remove the word unfiltered from the cells_wells_unfiltered, cells_bulbs_unfiltered and cells_loops_unfiltered files (hence renaming them). Finally, run steps 2c and 3 again after making sure to point to the right folder and condition in step 0.
+
+
+
+
+Statistics ratio and Statistics times:
+
+In these files, there should be three sheets wells, loops and bulbs with information on all ratios and times. You should find three more sheets with averaged values. Everything looks good. 
+
+One last note: the first column in any of these files is the condition number, the second is backup or no backup (2 indicates backup), the third column indicates replicate number while the fourth column indicates the following three ratios: 2-5, 5-10 and 10-15. 
+
+As a result, the second and third columns are empty in avg sheets since the average is taken over a condition number and it's ratio sequence (columns 1 and 4).

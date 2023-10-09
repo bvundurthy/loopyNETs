@@ -1,12 +1,12 @@
 %% This code should create a panel of images for antibody quantification
 % In any given row of an image panel, here is what each figure signifies:
-% 1 - dead cell at its time of death
-% 2 - ab_dapi cell to see if there was a dead cell to begin with
-% 3 - ab_cy5 cell to see if the antibody is stained
-
+% 1 - live cell at first time point
+% 2 - dead cell at its time of death
+% 3 - ab_dapi cell to see if there was a dead cell to begin with
+% 4 - ab_cy5 cell to see if the antibody is stained
 
 close all
-clearvars -except conds num_conds curr_cond
+clearvars -except conds num_conds cond_num replicate curr_rep replicate_list
 clc
 
 run('Step0_change_directory.m'); % cd into the condition folder
@@ -65,22 +65,39 @@ fbrgt_all{end+1} = fbrgt;
 fbrgt_all{end+1} = fbrgt;
 
 for i = 1:9
-    img_read{i} = imread(fcell_all{i});
+    img_read{i} = imread(fcell_all{i}); %#ok<SAGROW> 
     fprintf('Loaded image %d \n', i); 
 end
 
 %% Load the following figure once if you are debugging
 
-dead_cells = readmatrix('replicate1\Track_Cells.xlsx', 'Sheet', 'wells');
-% fig_label = {{'dapi'}, {'tritc'}, {'ab_dapi'}, {'ab_cy5'}}; 
-
-for i = 1:size(dead_cells,1)
-    j = dead_cells(i,2);
+dead_cells = readmatrix(strcat(replicate, '\Track_Cells.xlsx'), 'Sheet', 'wells');
+num_dead_cells = size(dead_cells,1); 
+intensities = zeros(num_dead_cells,6); 
+intensities(:,1) = (1:num_dead_cells)'; 
+cellNum = 0; 
+for i = 1:num_dead_cells
+    if ((dead_cells(i,end)<2) || (dead_cells(i,end)>15))
+        continue;
+    end
+    j = dead_cells(i,2); % well number
     time_point = [1 dead_cells(i,7)+1 8 9]; 
-    fig = figure (ceil(i/3));
+    cellNum = cellNum + 1; 
+    fig = figure (ceil(cellNum/3));
     fig.WindowState = 'maximized'; 
-    row = rem((i-1),3) + 1; 
-    
+    row = rem((cellNum-1),3) + 1; 
+% Commented from here to     
+    cells_temp = cells_wells{time_point(2)};
+    idx = find(cells_temp(:,2) == dead_cells(i,9));
+    centroid_temp = round(cat(1,cells{time_point(2), j}.Centroid)); 
+    cell_idx = find(centroid_temp(:,1) == cells_temp(idx,4) & centroid_temp(:,2) == cells_temp(idx,5));
+    bb_cell = cells{time_point(2), j}(cell_idx).BoundingBox;
+    area_cell = cells{time_point(2), j}(cell_idx).Area;
+    cell_cmin = ceil(bb_cell(1)); 
+    cell_cmax = cell_cmin + bb_cell(3) - 1;
+    cell_rmin = ceil(bb_cell(2));
+    cell_rmax = cell_rmin + bb_cell(4) - 1;
+%   here  
     for k = 1:4 % time_point
         fig_label = {{'dapi'}, {strcat('tritc@',num2str(time_point(2)-1))}, {'ab-dapi'}, {'ab-cy5'}}; 
         img_blob = img_read{time_point(k)}; % imread(fcell_all{time_point(k)}); 
@@ -89,14 +106,28 @@ for i = 1:size(dead_cells,1)
         cmax = cmin + base_BB(j,3) - 1;
         rmin = ceil(base_BB(j,2)+wells_disp_all(time_point(k), 2));
         rmax = rmin + base_BB(j,4) - 1;
-%         if (cmin<0 || rmin<0 || cmax>size(img_brgt,2) || rmax>size(img_brgt,1))
-%             continue;
-%         end
-
+%         Commented from here to 
+        img_temp = img_blob(rmin:rmax, cmin:cmax,:); 
+        img_temp_gray = rgb2gray(img_temp); 
+        
+        img_cell_temp = cells_wells_image{time_point(2),j}; 
+        img_cell_temp(1:cell_rmin-1,:) = 0; 
+        img_cell_temp(cell_rmax+1:end,:) = 0; 
+        img_cell_temp(:,1:cell_cmin-1) = 0;
+        img_cell_temp(:,cell_cmax+1:end) = 0; 
+        
+        intensities(i,k+1) = sum(sum(double(img_temp_gray).*double(img_cell_temp)))/(area_cell*2^16); 
+        
+        if (cmin<0 || rmin<0 || cmax>size(img_brgt_src,2) || rmax>size(img_brgt_src,1))
+            continue;
+        end
+%             here
         subplot(3,4,4*(row-1)+k)
         imshow(img_blob(rmin:rmax, cmin:cmax,:)); % img_brgt(rmin:rmax, cmin:cmax) + 2 *
         hold on;
-        visboundaries(wells(j).Image); 
+%         visboundaries(wells(j).Image); 
+%         visboundaries(img_cell_temp, 'Color', 'w'); 
+        
         switch (k)
             case 1
 %                 visboundaries(cells_wells_image{time_point(k),dead_cells(i,3)}, 'Color', 'w');
@@ -111,14 +142,23 @@ for i = 1:size(dead_cells,1)
         end
                 
         
-        title(strcat('Well:', num2str(j), ' || Image:', fig_label{k}, ' || Ratio:', num2str(dead_cells(i,end))));
+        title(strcat('Cell:', num2str(i), '|| Well:', num2str(j), ' || Image:', fig_label{k}, ' || Ratio:', num2str(dead_cells(i,end))));
         
     end
-    if ceil((i+1)/3)~=ceil(i/3)
-        pause(0.5);
-        saveas(gcf, strcat('replicate1/figure',num2str(ceil(i/3)), '.png'));
+    intensities(i,end) = dead_cells(i,end); 
+    if ceil((cellNum+1)/3)~=ceil(cellNum/3)
+        pause(0.5); 
+        saveas(gcf, strcat(replicate,'/figureNET',num2str(ceil(cellNum/3)), '.png'));
         close all;
     end
 end
-saveas(gcf, strcat('replicate1/figure',num2str(ceil(i/3)), '.png'));
+if (ceil(cellNum/3) ~= floor(cellNum/3))
+    saveas(gcf, strcat(replicate,'/figureNET',num2str(ceil(cellNum/3)), '.png'));
+end
+
+write_name = strcat(replicate,'/intensitiesNET.xlsx');
+writematrix(intensities, write_name,'WriteMode','overwritesheet');
+
+close all;
+cd(git_path_name); 
 
