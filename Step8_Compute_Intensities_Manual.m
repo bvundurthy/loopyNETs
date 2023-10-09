@@ -2,7 +2,7 @@ close all
 clear variables
 clc
 
-folder_name = 'E:\Udaya\07_08_2022\tiff_files\Cond_2\replicate1\'; 
+folder_name = 'E:\Udaya\07_08_2022\tiff_files\Cond_3\replicate1\'; 
 intensitiesOld = readmatrix(strcat(folder_name, 'intensitiesNET.xlsx'), 'Sheet', 'Sheet1');
 % figNames = dir(fullfile(folder_name, '*.png'));
 numCells = nnz(intensitiesOld(:,2)); % figNames, 1); 
@@ -20,8 +20,10 @@ for i = 1 : numFigs
     figName = strcat(folder_name, 'figureNET', num2str(i), '.png'); 
     imgCurr = imread(figName);
     disp('Opening image...');  
-    figure (1)
+    fig_temp = figure (1);
     imshow(imgCurr); 
+    fig_temp.WindowState = 'maximized'; 
+    
     
     for j = 1:3
         currCell = 3*(i-1) + j; 
