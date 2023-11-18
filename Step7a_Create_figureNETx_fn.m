@@ -5,6 +5,8 @@
 % 3 - ab_dapi cell to see if there was a dead cell to begin with
 % 4 - ab_cy5 cell to see if the antibody is stained
 
+% Step7_Antibody_Quantification.m handles creating files that are exclusive to NETs. More specifically, this code creates 'figureNET<>.png' file with 3X4  image where the rows represent three cells and columns represent live, dead, Ab blue and Ab pink stains. This can later be used to measure antibody intensities. Please note that this code assumes the date, condition number and replicate number come from Step0 code and thus calls the same. However, this requires the user to run this code for every condition and every replicate.
+
 close all
 clearvars -except conds num_conds cond_num replicate curr_rep replicate_list
 clc

@@ -1,12 +1,14 @@
+% Finally, Step8_Compute_Intensities_Manual is a standalone code that takes a specific date, condition and replicate and pulls up the figureNET files one after another. This then allows user to select RoIs to compute intensities for NETs. 
+
 close all
 clear variables
 clc
 
-folder_name = 'E:\Udaya\07_08_2022\tiff_files\Cond_3\replicate1\'; 
+folder_name = 'E:\Udaya\07_31_2022\tiff_files\Cond_1\replicate1\';
 intensitiesOld = readmatrix(strcat(folder_name, 'intensitiesNET.xlsx'), 'Sheet', 'Sheet1');
 % figNames = dir(fullfile(folder_name, '*.png'));
-numCells = nnz(intensitiesOld(:,2)); % figNames, 1); 
-numFigs = ceil(numCells/3); 
+numCells = nnz(intensitiesOld(:,2)); % figNames, 1);
+numFigs = ceil(numCells/3);
 lastFigCells = numCells - (numFigs-1)*3; 
 
 

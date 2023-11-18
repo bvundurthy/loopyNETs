@@ -12,9 +12,10 @@ Congratulations! You handled the toughest part of this code. It should be a pret
 	f. Adjust 'auto_illum' variable with auto illumination values. Each value corresponds to the cell image in 'fcell_all'. 
 	g. Replicates are in your control. Modify the number of replicates and the number of bulbs and loops in each replicate. Number of wells is basically the sum of the number of bulbs and loops. 
 	h. Make sure 'live_times' and 'dead_times' are the current number of cell images. 
-	i. Modify 'Ab_switch' to reflect your intention to perform antibody analysis. Note that this will only affect the automated analysis for antibody and not identification of cells in antibody images. The latter will happen as long as the images are present in 'fcell_all'. Modify this value to 'true' if you want to perform the analysis and to 'false' otherwise. 
+	i. Modify 'Ab_switch' to reflect your intention to perform antibody analysis. Note that this will only affect the automated analysis for antibody and not identification of cells in antibody images. The latter will happen as long as the images are present in 'fcell_all'. Modify this value to 'true' if you want to perform the analysis and to 'false' otherwise. Note that as of 11/18/2023 (revision submission), antibody analysis follows a different pipeline and this parameter is Ab_switch is to be defaulted to 'False'. 
 
-0. Back in the 'E:\Udaya\z_git_repo\loopyNETs\' folder, in the file 'Step0_change_directory.m', modify the folder name via 'folder_name' and the condition number via 'path_name'. Please note that these reflect which condition you are trying to run. This file need not be run. Also make sure that every path name ends with '\'. 
+0. Back in the 'E:\Udaya\z_git_repo\NET-array\' folder, in the file 'Step0_change_directory.m', modify the folder name via 'folder_name' and the condition number via 'path_name'. Please note that these reflect which condition you are trying to run. There exists a clash with Step 7 which specifically comments out the condition number line. If the intent is to run steps preceding Step 7, one should uncomment the condition number and modify the specific number as per their current run. 
+This file need not be run. Also make sure that every path name ends with '\'. 
 
 Analysis begins here. Gear up!
 
@@ -30,7 +31,7 @@ Analysis begins here. Gear up!
 
 2c. Run 'Step2c_Filtering.m' to filter out wells with greater than 4 cells and live cells that have an area greater than 177 sq. microns. 
 
-3. Run 'Step3_Randomize_Extract.m' to create 3 replicates (number based on value in parameters file) for this condition and then perform tracking on each of these replicates. Note that this will automatically execute Steps 4a and 4 internally. 
+3. Run 'Step3_Randomize_Extract.m' to create 3 replicates (number based on value in parameters file) for this condition and then perform tracking on each of these replicates. Note that this will automatically execute Steps 4 and 4a internally. 
 
 Kudos! This ends the steps you need to do for this condition. 
 
@@ -40,13 +41,35 @@ Once you finish running all of the above steps for all conditions, do the follow
 
 Note: If you find the technical replicates off by more than 5% for any condition, create a backup folder and move the files cells_wells, cells_bulbs, cells_loops, and folders replicate 1 and 2 into the backup folder. Then, remove the word unfiltered from the cells_wells_unfiltered, cells_bulbs_unfiltered and cells_loops_unfiltered files (hence renaming them). Finally, run steps 2c and 3 again after making sure to point to the right folder and condition in step 0.
 
-
-
-
-Statistics ratio and Statistics times:
+Deep dive into the excel files: Statistics ratio and Statistics times
 
 In these files, there should be three sheets wells, loops and bulbs with information on all ratios and times. You should find three more sheets with averaged values. Everything looks good. 
 
 One last note: the first column in any of these files is the condition number, the second is backup or no backup (2 indicates backup), the third column indicates replicate number while the fourth column indicates the following three ratios: 2-5, 5-10 and 10-15. 
 
 As a result, the second and third columns are empty in avg sheets since the average is taken over a condition number and it's ratio sequence (columns 1 and 4).
+
+Antibody analysis: 
+
+Step7_Antibody_figureNETx_multiple.m is the first step in Antibody analysis. Note that this requires commenting out the condition number in Step0. The condition numbers and replicates are specific to this script while the date is extracted from Step0. The code then calls Step7a_Create_figureNETx_fn.m to create figure_NETx.png image panels. 
+
+Step7a_Create_figureNETx_fn.m handles creating image panel that is exclusive to NETs. More specifically, this code creates 'figureNET<>.png' file with 3X4 image where the rows represent three cells and columns represent live, dead, Ab blue and Ab pink stains. This can later be used to measure antibody intensities in Step 8. 
+
+Finally, Step8_Antibody_Create_ROIs_Compute_Intensities.m is a standalone code that takes a specific date, condition and replicate and pulls up the figureNET files one after another. This then allows user to select RoIs to compute intensities for NETs. 
+
+
+
+-------------------------------------
+In the excel sheet ROI_intensitiesNET.xlsx; 
+Column A indicates the row # in the ROI_figureNET.tif image files panel
+Column B indicates total fluorescence intensity in DAPI
+Column C indicates total fluorescence intensity in Cy5
+Column D indicates total area inside the bounding box
+Column E indicates mean fluorescence intensity in DAPI
+Column F indicates mean fluorescence intensity in Cy5
+Column G indicates the ratio of areas of the dead and live neutrophil to determine NET
+
+
+
+
+
