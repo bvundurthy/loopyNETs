@@ -1,11 +1,75 @@
-1. Copy 'rename_as_parameters_put_in_each_condition.m' into every condition folder and rename it as 'parameters'. Modify the contents of this file in each folder to reflect the bright field images, live and dead cell images in that respective folder. Also, change the num_times. No need to run parameters.m.
+The following are instructions to run one condition. These steps need to be repeated for every condition. 
 
-2. Then modify the file name in 'Step0_change_directory.m' with the correct folder and condition number. No need to run Step0_change_directory.m.
+-1. Copy 'rename_as_parameters_put_in_each_condition.m' into the condition folder and rename it as 'parameters'. Modify  the contents of this file as follows (no need to run this file): 
+	a. Modify 'fbrgt_cons' variable with the list of all bright field images. Do not repeat file names. 
+	b. Modify 'num_times' variable to indicate the total number of files where cell (dead, alive and antibody) identification needs to be performed. 
+	c. Modify 'fcell_all' variable with the list of all images that require cell identification. This includes 'live', 'dead' and 'antibody'. 
+	d. Note the numbering adjacent to each file next to 'fbrgt_cons' and 'fcell_all'. 'fbrgt_base_num' is the number of the file in 'fbrgt_cons' that is going to act as the base file for well identification. 'fbrgt_num' is basically giving the association between bright field images and cell images. Modify it to reflect which bright field image links to the current cell image. For example, both live and dead cell images at time point have the same bright field images making them both 1. Similar thing happens with the antibody bright field image as well. 
 
-3. If there are no bubbles, skip this step and go to Step 4. In the presence of bubbles, run Step_NaN_bubbles_detect.m. This will open up a bright field image. Count the number of rectangles around bubbles that you want to create and enter this number in the command window and hit enter. This will open up a marquee tool in the image window. Select each bubble by creating a rectangle around the bubble. Do this for all bubbles and you are done with this step. 
+Congratulations! You handled the toughest part of this code. It should be a pretty smooth sail from here on. 
 
-4. Run only the remaining steps (1, 2, 2a, 3) one after another. Run Step 2b if you want to see the statistics on neutrophile deposition density. 
+	e. Adjust 'sheet_names' with appropriate names for the cell images in 'fcell_all'. 
+	f. Adjust 'auto_illum' variable with auto illumination values. Each value corresponds to the cell image in 'fcell_all'. 
+	g. Replicates are in your control. Modify the number of replicates and the number of bulbs and loops in each replicate. Number of wells is basically the sum of the number of bulbs and loops. 
+	h. Make sure 'live_times' and 'dead_times' are the current number of cell images. 
+	i. Modify 'Ab_switch' to reflect your intention to perform antibody analysis. Note that this will only affect the automated analysis for antibody and not identification of cells in antibody images. The latter will happen as long as the images are present in 'fcell_all'. Modify this value to 'true' if you want to perform the analysis and to 'false' otherwise. Note that as of 11/18/2023 (revision submission), antibody analysis follows a different pipeline and this parameter is Ab_switch is to be defaulted to 'False'. 
 
-5. Run the antibody step....more details to come
+0. Back in the 'E:\Udaya\z_git_repo\NET-array\' folder, in the file 'Step0_change_directory.m', modify the folder name via 'folder_name' and the condition number via 'path_name'. Please note that these reflect which condition you are trying to run. There exists a clash with Step 7 which specifically comments out the condition number line. If the intent is to run steps preceding Step 7, one should uncomment the condition number and modify the specific number as per their current run. 
+This file need not be run. Also make sure that every path name ends with '\'. 
 
-6. Step6 can now be run without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. Also make sure the condition numbers are correct.
+Analysis begins here. Gear up!
+
+1a. Run 'Step1a_bubbles_detect.m'. This will pull up the base bright field image. Look at the image. If you see any bubbles, count them and enter the number in the Command Window. If there are no bubbles, feel proud of your amazingly stable hands and enter 0 in Command Window. If there any bubbles, this will open up a marquee tool in the image window. Select each bubble by creating a rectangle around the bubble. Do this for all bubbles and you are done with this step. 
+
+1b. Run 'Step1b_Well_Detection_AutoIdentify_Base.m'. This will detect the wells and show you some custom made wells along with the bulbs. If you see anything weird here, call up husband support. Your feedback is very important to make the code robust. 
+
+1c. Run 'Step1c_Well_Displacement_Detection.m' to identify well displacement for all time points in this condition. If you are wondering why did you have to do the elaborate steps in parameters file above, this step will answer your question where it intelligently skips a few time points because they have already been computed. 
+
+2a. Run 'Step2a_Cells_Detect_Categorize_Write_Multiple.m' to identify the cells in all time points including live, dead and antibody. One image per time point will open up with 10 random wells in each image. 
+
+2b. Run 'Step2b_Neutrophil_distribution.m' to create a text file with the distribution of cells before any filtering (see next step). 
+
+2c. Run 'Step2c_Filtering.m' to filter out wells with greater than 4 cells and live cells that have an area greater than 177 sq. microns. 
+
+3. Run 'Step3_Randomize_Extract.m' to create 3 replicates (number based on value in parameters file) for this condition and then perform tracking on each of these replicates. Note that this will automatically execute Steps 4 and 4a internally. 
+
+Kudos! This ends the steps you need to do for this condition. 
+
+Once you finish running all of the above steps for all conditions, do the following to get the final output that will serve as an input to create your images. 
+
+5. Run 'Step5_Analysis_Replicates' without copying the code anywhere. Note that if you have additional timepoints (more than 5), you need to appropriately change the ratios. Also make sure the condition numbers are correct. 
+
+Note: If you find the technical replicates off by more than 5% for any condition, create a backup folder and move the files cells_wells, cells_bulbs, cells_loops, and folders replicate 1 and 2 into the backup folder. Then, remove the word unfiltered from the cells_wells_unfiltered, cells_bulbs_unfiltered and cells_loops_unfiltered files (hence renaming them). Finally, run steps 2c and 3 again after making sure to point to the right folder and condition in step 0.
+
+Deep dive into the excel files: Statistics ratio and Statistics times
+
+In these files, there should be three sheets wells, loops and bulbs with information on all ratios and times. You should find three more sheets with averaged values. Everything looks good. 
+
+One last note: the first column in any of these files is the condition number, the second is backup or no backup (2 indicates backup), the third column indicates replicate number while the fourth column indicates the following three ratios: 2-5, 5-10 and 10-15. 
+
+As a result, the second and third columns are empty in avg sheets since the average is taken over a condition number and it's ratio sequence (columns 1 and 4).
+
+Antibody analysis: 
+
+Step7_Antibody_figureNETx_multiple.m is the first step in Antibody analysis. Note that this requires commenting out the condition number in Step0. The condition numbers and replicates are specific to this script while the date is extracted from Step0. The code then calls Step7a_Create_figureNETx_fn.m to create figure_NETx.png image panels. 
+
+Step7a_Create_figureNETx_fn.m handles creating image panel that is exclusive to NETs. More specifically, this code creates 'figureNET<>.png' file with 3X4 image where the rows represent three cells and columns represent live, dead, Ab blue and Ab pink stains. This can later be used to measure antibody intensities in Step 8. 
+
+Finally, Step8_Antibody_Create_ROIs_Compute_Intensities.m is a standalone code that takes a specific date, condition and replicate and pulls up the figureNET files one after another. This then allows user to select RoIs to compute intensities for NETs. 
+
+
+
+-------------------------------------
+In the excel sheet ROI_intensitiesNET.xlsx; 
+Column A indicates the row # in the ROI_figureNET.tif image files panel
+Column B indicates total fluorescence intensity in DAPI
+Column C indicates total fluorescence intensity in Cy5
+Column D indicates total area inside the bounding box
+Column E indicates mean fluorescence intensity in DAPI
+Column F indicates mean fluorescence intensity in Cy5
+Column G indicates the ratio of areas of the dead and live neutrophil to determine NET
+
+
+
+
+

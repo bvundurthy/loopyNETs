@@ -5,6 +5,8 @@ clc
 run('Step0_change_directory.m'); % cd into the condition folder
 run('parameters.m'); % import all necessary parameters for all Steps
 
+fprintf('Starting Step 3. \n Folder name: "%s" \n', path_name);
+
 bulbs_num_reps = num_replicates; 
 loops_num_reps = num_replicates; 
 %% Creates new files and folders for replicates
@@ -24,7 +26,7 @@ for i = 1:num_replicates
 %         copyfile('track_wells_initial_only.m', newfile); 
     fprintf('Replicate %d folder created\n', i); 
 end
-%% Extract <num_replicates> sets of <num_bulbs> bulbs
+%% Extract <num_replicates> sets of <num_bulbs_rep> bulbs
 
 bulbs = readmatrix('Cells_Bulbs.xlsx', 'Sheet', 'live01');
 bulbs_num = length(bulbs(:,1)); 
@@ -33,18 +35,18 @@ array_bulbs = 1:bulbs_num;
 replicate = cell(num_replicates,1);
 bulbs_replicate = cell(num_replicates,1);
 for i = 1:num_replicates
-    if (length(array_bulbs)<num_bulbs)
+    if (length(array_bulbs)<num_bulbs_rep)
         bulbs_num_reps = i-1; 
         break;
     end
-    replicate{i} = randsample(array_bulbs,num_bulbs);
+    replicate{i} = randsample(array_bulbs,num_bulbs_rep); %try using randperm
     idx_rep = ismember(array_bulbs, replicate{i});
     array_bulbs(idx_rep) = [];
     
     bulbs_replicate{i} = bulbs(replicate{i}',:); 
     writematrix(bulbs_replicate{i}, strcat('replicate',num2str(i),'\Cells_Bulbs.xlsx'), 'Sheet', 'live01','WriteMode','overwritesheet');
 end
-%% Extract <num_replicates> sets of <num_loops> loops
+%% Extract <num_replicates> sets of <num_loops_rep> loops
 
 loops = readmatrix('Cells_Loops.xlsx', 'Sheet', 'live01');
 loops_num = length(loops(:,1)); 
@@ -54,11 +56,11 @@ replicate = cell(num_replicates,1);
 loops_replicate = cell(num_replicates,1);
 wells_replicate = cell(num_replicates,1); 
 for i = 1:num_replicates
-    if (length(array_loops) < num_loops || i > bulbs_num_reps)
+    if (length(array_loops) < num_loops_rep || i > bulbs_num_reps)
         loops_num_reps = i-1; 
         break;
     end
-    replicate{i} = randsample(array_loops,num_loops);
+    replicate{i} = randsample(array_loops,num_loops_rep);
     idx_rep = ismember(array_loops, replicate{i});
     array_loops(idx_rep) = [];
     
@@ -70,11 +72,16 @@ for i = 1:num_replicates
 end
 
 correct_reps = min(bulbs_num_reps, loops_num_reps); 
-if (correct_reps == 1)
+if (correct_reps == 1 && num_replicates==2)
+    rmdir('replicate2', 's');    
+    fprintf('Replicate 2 folder removed \n');
+end
+    
+if (correct_reps == 1 && num_replicates==3)
     rmdir('replicate2', 's');    
     rmdir('replicate3', 's');
     fprintf('Replicates 2 and 3 folders removed \n');
-elseif (correct_reps == 2)
+elseif (correct_reps == 2 && num_replicates==3)
     rmdir('replicate3', 's');
     fprintf('Replicate 3 folder removed \n');
 end
@@ -88,7 +95,7 @@ for i = 1:correct_reps
     if Ab_switch
         run(strcat(git_path_name,'Step4a_Ab_PostProcessing.m')); 
     else
-        fprintf('No antibody staining for this replicate. \n');
+        fprintf('No antibody staining for this condition. \n');
     end
     cd ..\
 end

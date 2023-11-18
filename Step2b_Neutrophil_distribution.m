@@ -4,13 +4,15 @@ clc
 
 run('Step0_change_directory.m'); % cd into the condition folder
 run('parameters.m'); % import all necessary parameters for all Steps
+
+fprintf('Starting Step 2b to identify and save neutrophil distribution. \n Folder name: "%s" \n', path_name);
+
+
 fileID = fopen('neutrophil_distribution.txt','w');
 
-% Read information about the wells from the excel file created in Step 1
-wells = readmatrix('wells_list.xlsx');
-num_wells = length(wells(:,1)); 
+load 'Step1_wells.mat'; % load all data from Step 1
 % Read information of all the cells from the unfiltered excel file created in Step 2
-cells_wells = readmatrix('Cells_Wells_unfiltered.xlsx', 'Sheet', 'live01');
+cells_wells = readmatrix('Cells_Wells.xlsx', 'Sheet', 'live01');
 
 % Count the repititions in well numbers
 [wells_counts,~] = groupcounts(cells_wells(:,1)); 
