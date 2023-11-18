@@ -14,14 +14,14 @@ Congratulations! You handled the toughest part of this code. It should be a pret
 	h. Make sure 'live_times' and 'dead_times' are the current number of cell images. 
 	i. Modify 'Ab_switch' to reflect your intention to perform antibody analysis. Note that this will only affect the automated analysis for antibody and not identification of cells in antibody images. The latter will happen as long as the images are present in 'fcell_all'. Modify this value to 'true' if you want to perform the analysis and to 'false' otherwise. Note that as of 11/18/2023 (revision submission), antibody analysis follows a different pipeline and this parameter is Ab_switch is to be defaulted to 'False'. 
 
-0. Back in the 'E:\Udaya\z_git_repo\NET-array\' folder, in the file 'Step0_change_directory.m', modify the folder name via 'folder_name' and the condition number via 'path_name'. Please note that these reflect which condition you are trying to run. There exists a clash with Step 7 which specifically comments out the condition number line. If the intent is to run steps preceding Step 7, one should uncomment the condition number and modify the specific number as per their current run. 
+0. Back in the github clone folder, in the file 'Step0_change_directory.m', modify the folder name via 'folder_name' and the condition number via 'path_name'. Please note that these reflect which condition you are trying to run. There exists a clash with Step 7 which specifically comments out the condition number line. If the intent is to run steps preceding Step 7, one should uncomment the condition number and modify the specific number as per their current run. 
 This file need not be run. Also make sure that every path name ends with '\'. 
 
 Analysis begins here. Gear up!
 
-1a. Run 'Step1a_bubbles_detect.m'. This will pull up the base bright field image. Look at the image. If you see any bubbles, count them and enter the number in the Command Window. If there are no bubbles, feel proud of your amazingly stable hands and enter 0 in Command Window. If there any bubbles, this will open up a marquee tool in the image window. Select each bubble by creating a rectangle around the bubble. Do this for all bubbles and you are done with this step. 
+1a. Run 'Step1a_bubbles_detect.m'. This will pull up the base bright field image. Look at the image. If you see any bubbles, count them and enter the number in the Command Window. If there are no bubbles, enter 0 in Command Window. If there any bubbles, this will open up a marquee tool in the image window. Select each bubble by creating a rectangle around the bubble. Do this for all bubbles and you are done with this step. 
 
-1b. Run 'Step1b_Well_Detection_AutoIdentify_Base.m'. This will detect the wells and show you some custom made wells along with the bulbs. If you see anything weird here, call up husband support. Your feedback is very important to make the code robust. 
+1b. Run 'Step1b_Well_Detection_AutoIdentify_Base.m'. This will detect the wells and show you some custom made wells along with the bulbs.
 
 1c. Run 'Step1c_Well_Displacement_Detection.m' to identify well displacement for all time points in this condition. If you are wondering why did you have to do the elaborate steps in parameters file above, this step will answer your question where it intelligently skips a few time points because they have already been computed. 
 
